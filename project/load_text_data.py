@@ -23,8 +23,31 @@ import sklearn.datasets
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
 
+def label_to_index(labels):
+    """
+    Generate an index for each unique label in the list. Returns a dictionary to map between them.
 
-def load_text_from_files(root_dir, test_dataset_ratio=0.2):
+    Parameters
+    ----------
+    labels: list of str
+        List of labels
+
+    Returns
+    -------
+    label_to_index: dict
+        Unique label to integer index mapping
+    index_to_label: dict
+        Integer index to unique label mapping
+    """
+
+    unique_labels = sorted(set(labels))
+
+    label_to_index = {l: i for i, l in enumerate(unique_labels)}
+    index_to_label = {i: l for l, i in label_to_index.items()}
+
+    return label_to_index, index_to_label
+
+def load_text_from_files(root_dir, test_dataset_ratio=0.2, errors=None):
     """
     Load text from files under label directories.
 
@@ -34,6 +57,8 @@ def load_text_from_files(root_dir, test_dataset_ratio=0.2):
         Parent directory of labeled directories, each of which contains text files
     test_dataset_ratio: float
         Ratio of test dataset to split the data into training dataset and test dataset
+    errors: str
+        Set to 'ignore' if you want to ignore a byte that cannot be decoded.
 
     Returns
     -------
@@ -63,8 +88,8 @@ def load_text_from_files(root_dir, test_dataset_ratio=0.2):
 
         samples_for_label = list()
         # Process files
-        for input_file in label_dir.glob("*.txt"):
-            with open(input_file, "r") as f:
+        for input_file in label_dir.glob("*"):
+            with open(input_file, "r", errors=errors) as f:
                 text = f.read()  # Change this if you are reading a very large text file.
                 sample = (text, label)
                 samples_for_label.append(sample)

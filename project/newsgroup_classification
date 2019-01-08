@@ -29,7 +29,7 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
 
 EPOCH_SIZE = 20
-TOP_VOCABULARY_SIZE = 1000
+TOP_VOCABULARY_SIZE = 10000
 
 DATA_DIR = "../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828"  # Change this based on your set up
 

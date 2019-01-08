@@ -14,8 +14,8 @@ from pathlib import Path
 
 import numpy as np
 
-from project.text_to_index import label_to_index
-from project.text_to_index import text_to_word_list
+from project.text_to_index import map_label_to_index
+from project.text_to_index import map_text_to_word_list
 
 log = logging.getLogger(__name__)
 logging.basicConfig(
@@ -30,7 +30,7 @@ class TestTextToIndex(unittest.TestCase):
         """
 
         labels = ["banana", "apple", "coconut", "apple"]
-        label2index, index2label = label_to_index(labels)
+        label2index, index2label = map_label_to_index(labels)
 
         actual = sorted(label2index.keys())
         expected = ["apple", "banana", "coconut"]
@@ -46,7 +46,7 @@ class TestTextToIndex(unittest.TestCase):
         Test text to word list mapping
         """
         text = "apple       banana\n coconut"
-        word_list = text_to_word_list(text)
+        word_list = map_text_to_word_list(text)
 
         actual = sorted(word_list)
         expected = ["apple", "banana", "coconut"]
@@ -75,7 +75,7 @@ class TestTextToIndex(unittest.TestCase):
                             "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
 
             text = s
-            s2 = text_to_word_list(text)
+            s2 = map_text_to_word_list(text)
             expected = "ab"
             actual = s2[0]
 

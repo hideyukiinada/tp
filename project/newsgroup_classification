@@ -20,16 +20,16 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import LSTM
 from project.load_text_data import load_text_from_files
-from project.text_to_index import label_to_index
-from project.text_to_index import text_list_to_word_list
-from project.text_to_index import text_to_word_list
-from project.text_to_index import word_list_to_vocabulary
+from project.text_to_index import map_label_to_index
+from project.text_to_index import map_text_list_to_word_list
+from project.text_to_index import map_text_to_tokens
+from project.text_to_index import map_word_list_to_vocabulary
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
 
 EPOCH_SIZE = 20
-TOP_VOCABULARY_SIZE = 999
+TOP_VOCABULARY_SIZE = 1000
 
 DATA_DIR = "../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828"  # Change this based on your set up
 
@@ -39,15 +39,16 @@ def example():
     """
 
     # Load text data
-    (x_train, y_train), (x_test, y_test) = load_text_from_files(Path(DATA_DIR), test_dataset_ratio=0.2, errors='ignore')
+    (x_train_text, y_train_labels), (x_test_text, y_test_labels) = \
+        load_text_from_files(Path(DATA_DIR), test_dataset_ratio=0.2, errors='ignore')
 
-    label2index, index2label = label_to_index(y_train)
+    label_to_index, index_to_label = map_label_to_index(y_train_labels)
 
-    num_files_train = len(x_train)
-    num_labels_train = len(set(y_train))
+    num_files_train = len(x_train_text)
+    num_labels_train = len(set(y_train_labels))
 
-    num_files_test = len(x_test)
-    num_labels_test = len(set(y_test))
+    num_files_test = len(x_test_text)
+    num_labels_test = len(set(y_test_labels))
 
     log.info("Number of labels found in training dataset: %d" % (num_labels_train))
     log.info("Number of posts found in training dataset: %d" % (num_files_train))
@@ -58,54 +59,19 @@ def example():
     assert num_labels_train == num_labels_test
 
     # Break up entire text to words
-    all_words = text_list_to_word_list(x_train)
+    all_words = map_text_list_to_word_list(x_train_text)
 
-    vocab, vocabulary_size, top_vocabulary, top_vocabulary_size, word_to_id, id_to_word = \
-        word_list_to_vocabulary(all_words, TOP_VOCABULARY_SIZE)
+    vocab, vocabulary_size, top_vocabulary, top_vocabulary_size, reserved_word_size, word_to_index, index_to_word = \
+        map_word_list_to_vocabulary(all_words, TOP_VOCABULARY_SIZE)
 
     # Convert train text to tokens
-    x_list = list()
-    y_list = list()
-
-    for i, text in enumerate(x_train):
-        log.debug("Processing post: [%d]" % (i+1))
-        words_in_text = text_to_word_list(text)
-
-        word_id_list = list()
-        for w in words_in_text:
-            if w not in word_to_id:
-                id = 0  # Unknown
-            else:
-                id = word_to_id[w]
-            word_id_list.append(id)
-
-        word_array = np.array(word_id_list)
-        word_array_one_hot = keras.utils.to_categorical(word_array, top_vocabulary_size+1).astype(np.float32)
-
-        s = np.sum(word_array_one_hot, axis=0)
-        s = s.reshape(1, 1000)
-
-        x_list.append(s)
-
-        # For now, do not change non-zero element to 1.
-        label_index = label2index[y_train[i]]
-        label_index = keras.utils.to_categorical(label_index, 20).astype(np.float32)
-        label_index = label_index.reshape(1, 20)
-        y_list.append(label_index)
-
-
-    x_train = np.concatenate(x_list, axis=0)
-    print(x_train.shape)
-    y_train = np.concatenate(y_list)
-
-
-
-
+    x_train, y_train = map_text_to_tokens(x_train_text, y_train_labels,
+                                          top_vocabulary_size, reserved_word_size, num_labels_train, label_to_index, word_to_index)
 
     # Set up a model
     model = Sequential()
     # model.add(LSTM(512, input_shape=x_train.shape[1:], return_sequences=False)) # input_shape.  Change (60000, 28, 28) to (28, 28)
-    model.add(Dense(128, activation='relu', input_shape=(1000,)))
+    model.add(Dense(128, activation='relu', input_shape=(top_vocabulary_size+reserved_word_size,)))
     model.add(Dense(20, activation='softmax'))
     # Note the use of tf.train.AdamOptimizer instead of tf.keras.optimizers.Adam
     optimizer = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999)

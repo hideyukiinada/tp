@@ -24,7 +24,9 @@ import re
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
 
-def label_to_index(labels):
+RESERVED_WORD_LIST = ["<UNK>", "<EOS>"]
+
+def map_label_to_index(labels):
     """
     Generate an index for each unique label in the list. Returns a dictionary to map between them.
 
@@ -48,7 +50,7 @@ def label_to_index(labels):
 
     return label_to_index, index_to_label
 
-def text_list_to_word_list(text_list, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separator_list=None):
+def map_text_list_to_word_list(text_list, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separator_list=None):
     """
     Convert text to word list
 
@@ -73,12 +75,12 @@ def text_list_to_word_list(text_list, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\''
     word_list = list()
 
     for text in text_list:
-        w = text_to_word_list(text, filters=filters, separator_list=separator_list)
+        w = map_text_to_word_list(text, filters=filters, separator_list=separator_list)
         word_list += w
 
     return word_list
 
-def text_to_word_list(text, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separator_list=None):
+def map_text_to_word_list(text, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separator_list=None):
     """
     Convert text to word list
 
@@ -136,7 +138,7 @@ def text_to_word_list(text, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separato
 
     return word_list
 
-def word_list_to_vocabulary(word_list, top_vocabulary_size):
+def map_word_list_to_vocabulary(word_list, top_vocabulary_size):
     """
     From the list of words, select the top vocabulary with the size set to vocabulary_size, and returns
     word to index map as well as index to word map for the vocabulary.
@@ -158,6 +160,8 @@ def word_list_to_vocabulary(word_list, top_vocabulary_size):
         Top vocabulary list
     top_vocabulary_size: int
         Size of the top vocabulary
+    reserved_word_size: int
+        Size of reserved word list
     word_to_index: dict
         Word to index to top vocabulary mapping
     index_to_word: dict
@@ -179,15 +183,16 @@ def word_list_to_vocabulary(word_list, top_vocabulary_size):
     top_vocabulary_size = min(vocabulary_size, top_vocabulary_size)
     log.info("Size of top vocabulary: %d" % (top_vocabulary_size))
 
-    top_vocabulary = vocabulary[:top_vocabulary_size]
+    top_vocabulary = vocabulary[:top_vocabulary_size] + RESERVED_WORD_LIST
+    word_count[top_vocabulary[-1]] = -1 # Set UNK count to -1
 
-    # print top 10
+    # print top ranking words
     log.info("Top 5 words (count)")
     for i in range(5):
         log.info("%10s (%d)" % (top_vocabulary[i], word_count[top_vocabulary[i]]))
 
     # Mapping between words and IDs
-    word_to_index = {w: i + 1 for i, w in enumerate(top_vocabulary)}  # +1 for unknown
+    word_to_index = {w: i for i, w in enumerate(top_vocabulary)}
     index_to_word = {i: w for w, i in word_to_index.items()}
 
     keys = word_to_index.keys()
@@ -202,4 +207,70 @@ def word_list_to_vocabulary(word_list, top_vocabulary_size):
         if i + 1 == 5:
             break
 
-    return vocabulary, vocabulary_size, top_vocabulary, top_vocabulary_size, word_to_index, index_to_word
+    return vocabulary, vocabulary_size, top_vocabulary, top_vocabulary_size, len(RESERVED_WORD_LIST), \
+           word_to_index, index_to_word
+
+
+def map_text_to_tokens(text_list, label_for_text_list, top_vocabulary_size, reserved_word_size, num_labels, label_to_index, word_to_index):
+    """
+
+    Parameters
+    ----------
+    text_list: list of str
+        List of text
+    label_for_text_list: list of str
+        List of labels, which is the ground truth for each text on the text_list
+    top_vocabulary_size: int
+        Size of the top vocabulary
+    reserved_word_size: int
+        Size of reserved word list
+    num_labels:
+        Number of labels
+    label_to_index: dict
+        Label to integer index mapping
+    word_to_index: dict
+        Word to index to top vocabulary mapping
+
+    Returns
+    -------
+    x: ndarray
+        Numpy array of indices representing text
+    y: ndarray
+        Numpy array of indices representing labels
+    """
+    x_list = list()
+    y_list = list()
+
+    top_and_reserved_vocabulary_size = top_vocabulary_size + reserved_word_size
+
+    for i, text in enumerate(text_list):
+        log.debug("Processing post: [%d]" % (i + 1))
+        words_in_text = map_text_to_word_list(text)
+
+        word_id_list = list()
+        for w in words_in_text:
+            if w not in word_to_index:
+                id = 0  # Unknown
+            else:
+                id = word_to_index[w]
+            word_id_list.append(id)
+
+        word_array = np.array(word_id_list)
+        word_array_one_hot = keras.utils.to_categorical(word_array, top_and_reserved_vocabulary_size).astype(np.float32)
+
+        s = np.sum(word_array_one_hot, axis=0)
+        s = s.reshape(1, top_and_reserved_vocabulary_size)
+
+        x_list.append(s)
+
+        # For now, do not change non-zero element to 1.
+        label_index = label_to_index[label_for_text_list[i]]
+        label_index = keras.utils.to_categorical(label_index, num_labels).astype(np.float32)
+        label_index = label_index.reshape(1, num_labels)
+        y_list.append(label_index)
+
+    x = np.concatenate(x_list, axis=0)
+    print(x.shape)
+    y = np.concatenate(y_list)
+
+    return x, y

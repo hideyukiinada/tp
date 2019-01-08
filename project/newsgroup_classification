@@ -21,7 +21,9 @@ from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import LSTM
 from project.load_text_data import load_text_from_files
 from project.text_to_index import label_to_index
+from project.text_to_index import text_list_to_word_list
 from project.text_to_index import text_to_word_list
+from project.text_to_index import word_list_to_vocabulary
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
@@ -36,10 +38,10 @@ def example():
     """Train the model and predict.
     """
 
+    # Load text data
     (x_train, y_train), (x_test, y_test) = load_text_from_files(Path(DATA_DIR), test_dataset_ratio=0.2, errors='ignore')
 
     label2index, index2label = label_to_index(y_train)
-
 
     num_files_train = len(x_train)
     num_labels_train = len(set(y_train))
@@ -55,66 +57,20 @@ def example():
 
     assert num_labels_train == num_labels_test
 
-    all_words = list()
-    for text_in_each_file in x_train:
-        filters = '\'!"#$%&()*+,.<>-/;=?@[\]^_`{|}~'
-        text_in_each_file = str(text_in_each_file)
+    # Break up entire text to words
+    all_words = text_list_to_word_list(x_train)
 
-        text_in_each_file = text_in_each_file.replace("\\n", " ")
+    vocab, vocabulary_size, top_vocabulary, top_vocabulary_size, word_to_id, id_to_word = \
+        word_list_to_vocabulary(all_words, TOP_VOCABULARY_SIZE)
 
-        words_in_text = text_to_word_list(text_in_each_file)
-        all_words += words_in_text
-
-    # Count occurrence
-    word_count = dict()
-    for w in all_words:
-        if w not in word_count:
-            word_count[w] = 0
-
-        count = word_count[w]
-        word_count[w] = count + 1
-
-    # The unique words in across all the files
-    vocab = sorted(word_count.keys(), key=lambda v: word_count[v], reverse=True)
-    vocabulary_size = len(vocab)
-    log.info("Size of vocabulary: %d" % (vocabulary_size))
-    top_vocabulary_size = min(vocabulary_size, TOP_VOCABULARY_SIZE)
-    log.info("Size of top vocabulary: %d" % (top_vocabulary_size))
-
-    top_vocabulary = vocab[:top_vocabulary_size]
-
-    # print top 10
-    log.info("Top 5 words (count)")
-    for i in range(5):
-        log.info("%10s (%d)" % (top_vocabulary[i], word_count[top_vocabulary[i]]))
-
-    # Mapping between words and IDs
-    word_to_id = {w: i + 1 for i, w in enumerate(top_vocabulary)}  # +1 for unknown
-    id_to_word = {i: w for w, i in word_to_id.items()}
-
-    keys = word_to_id.keys()
-    for i, k in enumerate(keys):
-        log.info("%d for %s" % (word_to_id[k], k))
-        if i + 1 == 5:
-            break
-
-    keys = id_to_word.keys()
-    for i, k in enumerate(keys):
-        log.info("%s for %d" % (id_to_word[k], k))
-        if i + 1 == 5:
-            break
-
+    # Convert train text to tokens
     x_list = list()
     y_list = list()
 
-    # Convert text to tokens
     for i, text in enumerate(x_train):
         log.debug("Processing post: [%d]" % (i+1))
-
-        text = text.replace("\\n", " ") # FIXME. Merge
-
         words_in_text = text_to_word_list(text)
-        
+
         word_id_list = list()
         for w in words_in_text:
             if w not in word_to_id:
@@ -124,13 +80,9 @@ def example():
             word_id_list.append(id)
 
         word_array = np.array(word_id_list)
-        #log.info(word_array.shape)
-
         word_array_one_hot = keras.utils.to_categorical(word_array, top_vocabulary_size+1).astype(np.float32)
-        #log.info(word_array_one_hot.shape)
 
         s = np.sum(word_array_one_hot, axis=0)
-        #log.info(s.shape)
         s = s.reshape(1, 1000)
 
         x_list.append(s)
@@ -141,11 +93,14 @@ def example():
         label_index = label_index.reshape(1, 20)
         y_list.append(label_index)
 
-        # change to one-hot
 
     x_train = np.concatenate(x_list, axis=0)
     print(x_train.shape)
     y_train = np.concatenate(y_list)
+
+
+
+
 
     # Set up a model
     model = Sequential()

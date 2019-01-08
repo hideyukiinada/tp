@@ -48,6 +48,36 @@ def label_to_index(labels):
 
     return label_to_index, index_to_label
 
+def text_list_to_word_list(text_list, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separator_list=None):
+    """
+    Convert text to word list
+
+    Parameters
+    ----------
+    text: list of str
+        List of text
+
+    filters: string
+        A string specifying characters to remove.  Each character will be removed from output.
+
+    separators: list of strings
+        A list of strings containing one or more separators
+        if not specified, ["\n", " "] will be used.
+
+    Returns
+    -------
+    word: list of str
+        List of words
+    """
+
+    word_list = list()
+
+    for text in text_list:
+        w = text_to_word_list(text, filters=filters, separator_list=separator_list)
+        word_list += w
+
+    return word_list
+
 def text_to_word_list(text, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separator_list=None):
     """
     Convert text to word list
@@ -105,3 +135,71 @@ def text_to_word_list(text, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separato
     word_list = text.split(first_separator)
 
     return word_list
+
+def word_list_to_vocabulary(word_list, top_vocabulary_size):
+    """
+    From the list of words, select the top vocabulary with the size set to vocabulary_size, and returns
+    word to index map as well as index to word map for the vocabulary.
+
+    Parameters
+    ----------
+    word_list: list of str
+        List of words
+    top_vocabulary_size: int
+        Size of top vocabulary
+
+    Returns
+    -------
+    vocabulary: list
+        vocabulary list
+    vocabulary_size: int
+        Size of the vocabulary
+    top_vocabulary: list
+        Top vocabulary list
+    top_vocabulary_size: int
+        Size of the top vocabulary
+    word_to_index: dict
+        Word to index to top vocabulary mapping
+    index_to_word: dict
+        Index to top vocabulary to word mapping
+    """
+    # Count occurrence
+    word_count = dict()
+    for w in word_list:
+        if w not in word_count:
+            word_count[w] = 0
+
+        count = word_count[w]
+        word_count[w] = count + 1
+
+    # The unique words in across all the files
+    vocabulary = sorted(word_count.keys(), key=lambda v: word_count[v], reverse=True)
+    vocabulary_size = len(vocabulary)
+    log.info("Size of vocabulary: %d" % (vocabulary_size))
+    top_vocabulary_size = min(vocabulary_size, top_vocabulary_size)
+    log.info("Size of top vocabulary: %d" % (top_vocabulary_size))
+
+    top_vocabulary = vocabulary[:top_vocabulary_size]
+
+    # print top 10
+    log.info("Top 5 words (count)")
+    for i in range(5):
+        log.info("%10s (%d)" % (top_vocabulary[i], word_count[top_vocabulary[i]]))
+
+    # Mapping between words and IDs
+    word_to_index = {w: i + 1 for i, w in enumerate(top_vocabulary)}  # +1 for unknown
+    index_to_word = {i: w for w, i in word_to_index.items()}
+
+    keys = word_to_index.keys()
+    for i, k in enumerate(keys):
+        log.info("%d for %s" % (word_to_index[k], k))
+        if i + 1 == 5:
+            break
+
+    keys = index_to_word.keys()
+    for i, k in enumerate(keys):
+        log.info("%s for %d" % (index_to_word[k], k))
+        if i + 1 == 5:
+            break
+
+    return vocabulary, vocabulary_size, top_vocabulary, top_vocabulary_size, word_to_index, index_to_word

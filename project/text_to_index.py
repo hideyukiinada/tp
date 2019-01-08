@@ -211,7 +211,7 @@ def map_word_list_to_vocabulary(word_list, top_vocabulary_size):
            word_to_index, index_to_word
 
 
-def map_text_to_tokens(text_list, label_for_text_list, top_vocabulary_size, reserved_word_size, num_labels, label_to_index, word_to_index):
+def map_text_to_token_matrix(text_list, label_for_text_list, top_vocabulary_size, reserved_word_size, num_labels, label_to_index, word_to_index):
     """
 
     Parameters

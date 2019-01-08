@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 from project.load_text_data import load_text_from_files
-from project.load_text_data import label_to_index
+from project.text_to_index import label_to_index
 
 TEST_DATA_DIR = Path("/tmp/tp/test")
 
@@ -125,23 +125,6 @@ class TestLoadTextData(unittest.TestCase):
                 break
 
         self.assertTrue(result, "Text was not loaded.")
-
-    def test_label_to_index(self):
-        """
-        Test label to index mapping
-        """
-
-        labels = ["banana", "apple", "coconut", "apple"]
-        label2index, index2label = label_to_index(labels)
-
-        actual = sorted(label2index.keys())
-        expected = ["apple", "banana", "coconut"]
-
-        actual = sorted(index2label.keys())
-        expected = [0, 1, 2]
-
-        result = actual == expected
-        self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
 
 
 def main():

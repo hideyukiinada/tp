@@ -23,29 +23,6 @@ import sklearn.datasets
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
 
-def label_to_index(labels):
-    """
-    Generate an index for each unique label in the list. Returns a dictionary to map between them.
-
-    Parameters
-    ----------
-    labels: list of str
-        List of labels
-
-    Returns
-    -------
-    label_to_index: dict
-        Unique label to integer index mapping
-    index_to_label: dict
-        Integer index to unique label mapping
-    """
-
-    unique_labels = sorted(set(labels))
-
-    label_to_index = {l: i for i, l in enumerate(unique_labels)}
-    index_to_label = {i: l for l, i in label_to_index.items()}
-
-    return label_to_index, index_to_label
 
 def load_text_from_files(root_dir, test_dataset_ratio=0.2, errors=None):
     """

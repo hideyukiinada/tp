@@ -20,7 +20,8 @@ from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import LSTM
 from project.load_text_data import load_text_from_files
-from project.load_text_data import label_to_index
+from project.text_to_index import label_to_index
+from project.text_to_index import text_to_word_list
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
@@ -28,7 +29,7 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd 
 EPOCH_SIZE = 20
 TOP_VOCABULARY_SIZE = 999
 
-DATA_DIR = "../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828"  # FIXME
+DATA_DIR = "../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828"  # Change this based on your set up
 
 
 def example():
@@ -61,8 +62,7 @@ def example():
 
         text_in_each_file = text_in_each_file.replace("\\n", " ")
 
-        words_in_text = keras.preprocessing.text.text_to_word_sequence(text_in_each_file,
-                                                                       filters=filters, lower=False, split=' ')
+        words_in_text = text_to_word_list(text_in_each_file)
         all_words += words_in_text
 
     # Count occurrence
@@ -113,9 +113,8 @@ def example():
 
         text = text.replace("\\n", " ") # FIXME. Merge
 
-        filters = '\'!"#$%&()*+,-/;=?@[\]^_`{|}~'
-        words_in_text = keras.preprocessing.text.text_to_word_sequence(text,
-                                                                       filters=filters, lower=False, split=' ')
+        words_in_text = text_to_word_list(text)
+        
         word_id_list = list()
         for w in words_in_text:
             if w not in word_to_id:

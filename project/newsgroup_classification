@@ -10,6 +10,7 @@ __email__ = "hideyuki@gmail.com"
 
 import os
 import logging
+import argparse
 
 from pathlib import Path
 import tensorflow as tf
@@ -31,16 +32,29 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd 
 EPOCH_SIZE = 20
 TOP_VOCABULARY_SIZE = 10000
 
-DATA_DIR = "../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828"  # Change this based on your set up
+# Example of data dir:
+# ../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828
+# Specify this with --data_dir option on the command line
 
-
-def example():
+def example(data_dir=None):
     """Train the model and predict.
+
+    Parameters
+    ----------
+    data_dir: str
+        Directory where the data is stored.
+
+    raises
+    -------
+    ValueError
+        If data_dir is not set.
     """
+    if data_dir is None:
+        raise ValueError("data_dir is not set.")
 
     # Load text data
     (x_train_text, y_train_labels), (x_test_text, y_test_labels) = \
-        load_text_from_files(Path(DATA_DIR), test_dataset_ratio=0.2, errors='ignore')
+        load_text_from_files(Path(data_dir), test_dataset_ratio=0.2, errors='ignore')
 
     label_to_index, index_to_label = map_label_to_index(y_train_labels)
 
@@ -99,7 +113,16 @@ def example():
 
 def main():
     """Defines an application's main functionality"""
-    example()
+
+    parser = argparse.ArgumentParser(description='Newsgroup post classifier')
+    parser.add_argument('--data_dir',
+                        type=str,
+                        help="Data directory")
+
+    args = parser.parse_args()
+    data_dir = args.data_dir
+
+    example(data_dir = data_dir)
 
 
 if __name__ == "__main__":

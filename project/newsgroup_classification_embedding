@@ -95,11 +95,13 @@ def example(data_dir=None):
     x_train = keras.preprocessing.sequence.pad_sequences(x_train_raw,
                                                          value=word_to_index["<PAD>"],
                                                          padding='post',
+                                                         truncating='post',
                                                          maxlen=NUM_WORDS_PER_DOC)
 
     x_test = keras.preprocessing.sequence.pad_sequences(x_test_raw,
                                                         value=word_to_index["<PAD>"],
                                                         padding='post',
+                                                        truncating='post',
                                                         maxlen=NUM_WORDS_PER_DOC)
 
     # Set up a model

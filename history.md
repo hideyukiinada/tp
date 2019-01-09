@@ -11,4 +11,4 @@ Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |Embedding with pooling (256 words, 16 embedding output, truncating:post) | 10000 | 20 | 0.2833 | 0.9385 | 73.370577% |
 |Embedding with pooling (256 words, 128 embedding output, truncating:post) | 10000 | 20 | 0.0123 | 0.9982 | 77.866454% |
 |Embedding with pooling (512 words, 128 embedding output, truncating:post) | 10000 | 20 | 0.0392 | 0.9932 | 76.509710% |
-
+|Embedding without pooling (512 words, 128 embedding output, truncating:post) | 10000 | 20 |  0.0457 | 0.9869 | 66.374036% |

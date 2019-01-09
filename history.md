@@ -9,3 +9,5 @@ Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |Word frequency matrix per doc (2nd run)|10000|20|0.0256 | 0.9981| 81.723863%
 |Embedding (256 words, 16 embedding output, truncating:pre) | 10000 | 20 | 0.2864 | 0.9377 | 71.827614% |
 |Embedding (256 words, 16 embedding output, truncating:post) | 10000 | 20 | 0.2833 | 0.9385 | 73.370577% |
+|Embedding (256 words, 128 embedding output, truncating:post) | 10000 | 20 | 0.0123 | 0.9982 | 77.866454% |
+

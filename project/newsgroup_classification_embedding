@@ -106,9 +106,9 @@ def example(data_dir=None):
 
     # Set up a model
     model = Sequential()
-    model.add(Embedding(top_vocabulary_size + reserved_word_size, 16))
+    model.add(Embedding(top_vocabulary_size + reserved_word_size, 128))
     model.add(GlobalAveragePooling1D())
-    model.add(Dense(16, activation='relu'))
+    model.add(Dense(128, activation='relu'))
     model.add(Dense(20, activation='softmax'))
     # Note the use of tf.train.AdamOptimizer instead of tf.keras.optimizers.Adam
     optimizer = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999)

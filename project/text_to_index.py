@@ -24,7 +24,7 @@ import re
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
 
-RESERVED_WORD_LIST = ["<UNK>", "<EOS>"]
+RESERVED_WORD_LIST = ["<UNK>", "<EOS>", "<PAD>"]
 
 def map_label_to_index(labels):
     """
@@ -184,7 +184,8 @@ def map_word_list_to_vocabulary(word_list, top_vocabulary_size):
     log.info("Size of top vocabulary: %d" % (top_vocabulary_size))
 
     top_vocabulary = vocabulary[:top_vocabulary_size] + RESERVED_WORD_LIST
-    word_count[top_vocabulary[-1]] = -1 # Set UNK count to -1
+    for i in range(len(RESERVED_WORD_LIST)):
+        word_count[top_vocabulary[-i]] = -1 # Set RESERVED_WORD_LIST entries count to -1
 
     # print top ranking words
     log.info("Top 5 words (count)")
@@ -270,6 +271,63 @@ def map_text_to_token_matrix(text_list, label_for_text_list, top_vocabulary_size
         y_list.append(label_index)
 
     x = np.concatenate(x_list, axis=0)
+    print(x.shape)
+    y = np.concatenate(y_list)
+
+    return x, y
+
+def map_text_to_word_index(text_list, label_for_text_list, top_vocabulary_size, reserved_word_size, num_labels, label_to_index, word_to_index):
+    """
+
+    Parameters
+    ----------
+    text_list: list of str
+        List of text
+    label_for_text_list: list of str
+        List of labels, which is the ground truth for each text on the text_list
+    top_vocabulary_size: int
+        Size of the top vocabulary
+    reserved_word_size: int
+        Size of reserved word list
+    num_labels:
+        Number of labels
+    label_to_index: dict
+        Label to integer index mapping
+    word_to_index: dict
+        Word to index to top vocabulary mapping
+
+    Returns
+    -------
+    x: ndarray
+        Numpy array of word indices. Each entry is an index to the vocabulary list.
+    y: ndarray
+        Numpy array of indices representing labels
+    """
+    x_list = list()
+    y_list = list()
+
+    top_and_reserved_vocabulary_size = top_vocabulary_size + reserved_word_size
+
+    for i, text in enumerate(text_list):
+        log.debug("Processing post: [%d]" % (i + 1))
+        words_in_text = map_text_to_word_list(text)
+
+        word_id_list = list()
+        for w in words_in_text:
+            if w not in word_to_index:
+                id = 0  # Unknown
+            else:
+                id = word_to_index[w]
+            word_id_list.append(id)
+
+        # For now, do not change non-zero element to 1.
+        label_index = label_to_index[label_for_text_list[i]]
+        label_index = keras.utils.to_categorical(label_index, num_labels).astype(np.float32)
+        label_index = label_index.reshape(1, num_labels)
+        x_list.append(word_id_list)
+        y_list.append(label_index)
+
+    x = np.array(x_list)
     print(x.shape)
     y = np.concatenate(y_list)
 

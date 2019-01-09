@@ -20,7 +20,9 @@ import keras
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import Embedding
-from tensorflow.python.keras.layers import LSTM
+#from tensorflow.python.keras.layers import LSTM
+from tensorflow.python.keras.layers import CuDNNLSTM as LSTM
+
 
 from project.load_text_data import load_text_from_files
 from project.text_to_index import map_label_to_index
@@ -107,7 +109,7 @@ def example(data_dir=None):
     # Set up a model
     model = Sequential()
     model.add(Embedding(top_vocabulary_size + reserved_word_size, 128, input_length=NUM_WORDS_PER_DOC))
-    model.add(LSTM(512, return_sequences=False))
+    model.add(LSTM(128, return_sequences=False))
     model.add(Dense(128, activation='relu'))
     model.add(Dense(20, activation='softmax'))
     # Note the use of tf.train.AdamOptimizer instead of tf.keras.optimizers.Adam

@@ -33,7 +33,7 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd 
 
 EPOCH_SIZE = 20
 TOP_VOCABULARY_SIZE = 10000
-NUM_WORDS_PER_DOC = 256
+NUM_WORDS_PER_DOC = 512
 
 
 # Example of data dir:

@@ -10,16 +10,11 @@ __email__ = "hideyuki@gmail.com"
 
 import os
 import logging
+import re
 
-import tensorflow as tf
 import numpy as np
 import keras
 
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense
-from tensorflow.python.keras.layers import LSTM
-import sklearn.datasets
-import re
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging

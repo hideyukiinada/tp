@@ -2,6 +2,10 @@
 """
 Newsgroup post classification
 
+References
+----------
+https://scikit-learn.org/stable/datasets/index.html#loading-other-datasets
+
 __author__ = "Hide Inada"
 __copyright__ = "Copyright 2018, Hide Inada"
 __license__ = "The MIT License"

@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 from project.load_text_data import load_text_from_files
-from project.text_to_index import label_to_index
+from project.text_to_id import map_label_to_id
 
 TEST_DATA_DIR = Path("/tmp/tp/test")
 

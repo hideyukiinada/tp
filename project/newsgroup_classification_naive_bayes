@@ -4,7 +4,7 @@ Newsgroup post classification
 
 References
 ----------
-https://scikit-learn.org/stable/datasets/index.html#loading-other-datasets
+https://scikit-learn.org/stable/datasets/id.html#loading-other-datasets
 https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html
 https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html
 

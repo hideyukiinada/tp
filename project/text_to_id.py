@@ -21,9 +21,9 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd 
 
 RESERVED_WORD_LIST = ["<UNK>", "<EOS>", "<PAD>"]
 
-def map_label_to_index(labels):
+def map_label_to_id(labels):
     """
-    Generate an index for each unique label in the list. Returns a dictionary to map between them.
+    Generate an id for each unique label in the list. Returns a dictionary to map between them.
 
     Parameters
     ----------
@@ -32,18 +32,18 @@ def map_label_to_index(labels):
 
     Returns
     -------
-    label_to_index: dict
-        Unique label to integer index mapping
-    index_to_label: dict
-        Integer index to unique label mapping
+    label_to_id: dict
+        Unique label to integer id mapping
+    id_to_label: dict
+        Integer id to unique label mapping
     """
 
     unique_labels = sorted(set(labels))
 
-    label_to_index = {l: i for i, l in enumerate(unique_labels)}
-    index_to_label = {i: l for l, i in label_to_index.items()}
+    label_to_id = {l: i for i, l in enumerate(unique_labels)}
+    id_to_label = {i: l for l, i in label_to_id.items()}
 
-    return label_to_index, index_to_label
+    return label_to_id, id_to_label
 
 def map_text_list_to_word_list(text_list, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', separator_list=None):
     """
@@ -136,7 +136,7 @@ def map_text_to_word_list(text, filters='!"#$%&()*+,-./:;<=>?@[]^_`{|}~\'', sepa
 def map_word_list_to_vocabulary(word_list, top_vocabulary_size):
     """
     From the list of words, select the top vocabulary with the size set to vocabulary_size, and returns
-    word to index map as well as index to word map for the vocabulary.
+    word to id map as well as id to word map for the vocabulary.
 
     Parameters
     ----------
@@ -157,9 +157,9 @@ def map_word_list_to_vocabulary(word_list, top_vocabulary_size):
         Size of the top vocabulary
     reserved_word_size: int
         Size of reserved word list
-    word_to_index: dict
-        Word to index to top vocabulary mapping
-    index_to_word: dict
+    word_to_id: dict
+        Word to id to top vocabulary mapping
+    id_to_word: dict
         Index to top vocabulary to word mapping
     """
     # Count occurrence
@@ -188,26 +188,26 @@ def map_word_list_to_vocabulary(word_list, top_vocabulary_size):
         log.info("%10s (%d)" % (top_vocabulary[i], word_count[top_vocabulary[i]]))
 
     # Mapping between words and IDs
-    word_to_index = {w: i for i, w in enumerate(top_vocabulary)}
-    index_to_word = {i: w for w, i in word_to_index.items()}
+    word_to_id = {w: i for i, w in enumerate(top_vocabulary)}
+    id_to_word = {i: w for w, i in word_to_id.items()}
 
-    keys = word_to_index.keys()
+    keys = word_to_id.keys()
     for i, k in enumerate(keys):
-        log.info("%d for %s" % (word_to_index[k], k))
+        log.info("%d for %s" % (word_to_id[k], k))
         if i + 1 == 5:
             break
 
-    keys = index_to_word.keys()
+    keys = id_to_word.keys()
     for i, k in enumerate(keys):
-        log.info("%s for %d" % (index_to_word[k], k))
+        log.info("%s for %d" % (id_to_word[k], k))
         if i + 1 == 5:
             break
 
     return vocabulary, vocabulary_size, top_vocabulary, top_vocabulary_size, len(RESERVED_WORD_LIST), \
-           word_to_index, index_to_word
+           word_to_id, id_to_word
 
 
-def map_text_to_token_matrix(text_list, label_for_text_list, top_vocabulary_size, reserved_word_size, num_labels, label_to_index, word_to_index):
+def map_text_to_token_matrix(text_list, label_for_text_list, top_vocabulary_size, reserved_word_size, num_labels, label_to_id, word_to_id):
     """
 
     Parameters
@@ -222,10 +222,10 @@ def map_text_to_token_matrix(text_list, label_for_text_list, top_vocabulary_size
         Size of reserved word list
     num_labels:
         Number of labels
-    label_to_index: dict
-        Label to integer index mapping
-    word_to_index: dict
-        Word to index to top vocabulary mapping
+    label_to_id: dict
+        Label to integer id mapping
+    word_to_id: dict
+        Word to id to top vocabulary mapping
 
     Returns
     -------
@@ -245,10 +245,10 @@ def map_text_to_token_matrix(text_list, label_for_text_list, top_vocabulary_size
 
         word_id_list = list()
         for w in words_in_text:
-            if w not in word_to_index:
+            if w not in word_to_id:
                 id = 0  # Unknown
             else:
-                id = word_to_index[w]
+                id = word_to_id[w]
             word_id_list.append(id)
 
         word_array = np.array(word_id_list)
@@ -260,10 +260,10 @@ def map_text_to_token_matrix(text_list, label_for_text_list, top_vocabulary_size
         x_list.append(s)
 
         # For now, do not change non-zero element to 1.
-        label_index = label_to_index[label_for_text_list[i]]
-        label_index = keras.utils.to_categorical(label_index, num_labels).astype(np.float32)
-        label_index = label_index.reshape(1, num_labels)
-        y_list.append(label_index)
+        label_id = label_to_id[label_for_text_list[i]]
+        label_id = keras.utils.to_categorical(label_id, num_labels).astype(np.float32)
+        label_id = label_id.reshape(1, num_labels)
+        y_list.append(label_id)
 
     x = np.concatenate(x_list, axis=0)
     print(x.shape)
@@ -271,7 +271,7 @@ def map_text_to_token_matrix(text_list, label_for_text_list, top_vocabulary_size
 
     return x, y
 
-def map_text_to_word_index(text_list, label_for_text_list, top_vocabulary_size, reserved_word_size, num_labels, label_to_index, word_to_index):
+def map_text_to_word_id(text_list, label_for_text_list, top_vocabulary_size, reserved_word_size, num_labels, label_to_id, word_to_id):
     """
 
     Parameters
@@ -286,15 +286,15 @@ def map_text_to_word_index(text_list, label_for_text_list, top_vocabulary_size, 
         Size of reserved word list
     num_labels:
         Number of labels
-    label_to_index: dict
-        Label to integer index mapping
-    word_to_index: dict
-        Word to index to top vocabulary mapping
+    label_to_id: dict
+        Label to integer id mapping
+    word_to_id: dict
+        Word to id to top vocabulary mapping
 
     Returns
     -------
     x: ndarray
-        Numpy array of word indices. Each entry is an index to the vocabulary list.
+        Numpy array of word indices. Each entry is an id to the vocabulary list.
     y: ndarray
         Numpy array of indices representing labels
     """
@@ -309,18 +309,18 @@ def map_text_to_word_index(text_list, label_for_text_list, top_vocabulary_size, 
 
         word_id_list = list()
         for w in words_in_text:
-            if w not in word_to_index:
+            if w not in word_to_id:
                 id = 0  # Unknown
             else:
-                id = word_to_index[w]
+                id = word_to_id[w]
             word_id_list.append(id)
 
         # For now, do not change non-zero element to 1.
-        label_index = label_to_index[label_for_text_list[i]]
-        label_index = keras.utils.to_categorical(label_index, num_labels).astype(np.float32)
-        label_index = label_index.reshape(1, num_labels)
+        label_id = label_to_id[label_for_text_list[i]]
+        label_id = keras.utils.to_categorical(label_id, num_labels).astype(np.float32)
+        label_id = label_id.reshape(1, num_labels)
         x_list.append(word_id_list)
-        y_list.append(label_index)
+        y_list.append(label_id)
 
     x = np.array(x_list)
     print(x.shape)

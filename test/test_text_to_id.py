@@ -14,8 +14,8 @@ from pathlib import Path
 
 import numpy as np
 
-from project.text_to_index import map_label_to_index
-from project.text_to_index import map_text_to_word_list
+from project.text_to_id import map_label_to_id
+from project.text_to_id import map_text_to_word_list
 
 log = logging.getLogger(__name__)
 logging.basicConfig(
@@ -24,18 +24,18 @@ logging.basicConfig(
 
 class TestTextToIndex(unittest.TestCase):
 
-    def test_label_to_index(self):
+    def test_label_to_id(self):
         """
-        Test label to index mapping
+        Test label to id mapping
         """
 
         labels = ["banana", "apple", "coconut", "apple"]
-        label2index, index2label = map_label_to_index(labels)
+        label2id, id2label = map_label_to_id(labels)
 
-        actual = sorted(label2index.keys())
+        actual = sorted(label2id.keys())
         expected = ["apple", "banana", "coconut"]
 
-        actual = sorted(index2label.keys())
+        actual = sorted(id2label.keys())
         expected = [0, 1, 2]
 
         result = actual == expected

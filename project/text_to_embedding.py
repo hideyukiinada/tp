@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
 
 RESERVED_WORD_LIST = ["<UNK>", "<EOS>", "<PAD>"]
-MODEL_PATH = "/tmp/ml_examples/word2vec_example.model"
+MODEL_PATH = "/tmp/tp/word2vec_example.model"
 
 def map_text_list_to_embedding(text_list, label_for_text_list, num_labels, label_to_id):
     """
@@ -44,9 +44,11 @@ def map_text_list_to_embedding(text_list, label_for_text_list, num_labels, label
         Numpy array of mean word embeddings for each text.
     y: ndarray
         Numpy array of indices representing labels
+    missing_words: set
+        Set of words not in the Word2Vec model's dictionary.
     """
     model = Word2Vec.load(MODEL_PATH)
-
+    missing_words = set()
     x_list = list()
     y_list = list()
 
@@ -61,6 +63,7 @@ def map_text_list_to_embedding(text_list, label_for_text_list, num_labels, label
             try:
                 v = model[w]
             except KeyError:
+                missing_words.add(w)
                 #log.warning("Skipping %s" % (w))
                 total_not_in_dict += 1
                 continue
@@ -92,4 +95,4 @@ def map_text_list_to_embedding(text_list, label_for_text_list, num_labels, label
     log.info("Number of words found in dict: %d" % (total_found_in_dict))
     log.info("Number of words not found in dict: %d" % (total_not_in_dict))
 
-    return x, y
+    return x, y, missing_words

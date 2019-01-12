@@ -31,6 +31,8 @@ EPOCH_SIZE = 20
 TOP_VOCABULARY_SIZE = 10000
 NUM_WORDS_PER_DOC = 512
 
+MISSING_WORD_LIST_TRAIN = "/tmp/tp/missing_words_train.txt"
+MISSING_WORD_LIST_TEST = "/tmp/tp/missing_words_test.txt"
 
 # Example of data dir:
 # ../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828
@@ -73,13 +75,19 @@ def example(data_dir=None):
     assert num_labels_train == num_labels_test
 
     # Break up entire text to words
-    x_train_v, y_train = map_text_list_to_embedding(x_train_text, y_train_labels,
+    x_train_v, y_train, missing_words = map_text_list_to_embedding(x_train_text, y_train_labels,
                                                 num_labels_train,
                                                 label_to_id)
 
-    x_test_v, y_test = map_text_list_to_embedding(x_test_text, y_test_labels,
+    with open(MISSING_WORD_LIST_TRAIN, "w") as f:
+        f.write("\n".join(missing_words))
+
+    x_test_v, y_test, missing_words = map_text_list_to_embedding(x_test_text, y_test_labels,
                                                 num_labels_test,
                                                 label_to_id)
+
+    with open(MISSING_WORD_LIST_TEST, "w") as f:
+        f.write("\n".join(missing_words))
 
     # Set up a model
     model = Sequential()

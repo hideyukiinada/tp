@@ -23,7 +23,7 @@ from project.text_to_id import map_text_to_word_id
 from project.text_to_id import map_word_list_to_vocabulary
 
 
-MODEL_PATH = "/tmp/ml_examples/word2vec_example.model"
+MODEL_PATH = "/tmp/tp/word2vec_example.model"
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging

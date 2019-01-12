@@ -59,7 +59,7 @@ def map_text_list_to_embedding(text_list, label_for_text_list, num_labels, label
         words_in_text = map_text_to_word_list(text)
 
         word_v_list = list()
-        for w in text:
+        for w in words_in_text:
             try:
                 v = model[w]
             except KeyError:
@@ -84,15 +84,21 @@ def map_text_list_to_embedding(text_list, label_for_text_list, num_labels, label
         word_v_np = np.array(word_v_list)
         word_count = word_v_np.shape[0]
         word_v_mean = np.sum(word_v_np, axis=0)/word_count
+        word_v_sum = np.sum(word_v_np, axis=0)
+
         #log.info("word_v_mean.shape")
         #log.info(word_v_mean.shape)
 
         x_list.append(word_v_mean)
+#        x_list.append(word_v_sum)
+
         y_list.append(label_id)
 
     x = np.array(x_list)
     print(x.shape)
     y = np.concatenate(y_list)
+
+    assert x.shape[0] == y.shape[0]
 
     log.info("Number of words found in dict: %d" % (total_found_in_dict))
     log.info("Number of words not found in dict: %d" % (total_not_in_dict))

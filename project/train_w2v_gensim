@@ -70,8 +70,9 @@ def train(data_dir=None):
     all_words = map_text_list_to_word_list(x_train_text)
 
     model = Word2Vec([all_words],
-                     size=100,  # Number of dimension for a word vector
+                     size=300,  # Number of dimension for a word vector
                      window=5,
+                     #iter=100,
                      min_count=1,
                      workers=4)  # Num threads
 
@@ -79,6 +80,7 @@ def train(data_dir=None):
     model_dir = model_path.parent
     if model_dir.exists() is False:
         model_dir.mkdir(parents=True, exist_ok=True)
+
 
     model.save(MODEL_FILE)
 

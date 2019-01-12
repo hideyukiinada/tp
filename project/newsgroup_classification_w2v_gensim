@@ -27,7 +27,7 @@ from project.text_to_id import map_label_to_id
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
 
-EPOCH_SIZE = 20
+EPOCH_SIZE = 10000
 TOP_VOCABULARY_SIZE = 10000
 NUM_WORDS_PER_DOC = 512
 
@@ -95,7 +95,7 @@ def example(data_dir=None):
     model.add(Dense(128, activation='relu'))
     model.add(Dense(20, activation='softmax'))
     # Note the use of tf.train.AdamOptimizer instead of tf.keras.optimizers.Adam
-    optimizer = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999)
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.003, beta1=0.9, beta2=0.999)
     model.compile(loss=tf.keras.losses.categorical_crossentropy,
                   optimizer=optimizer, metrics=['accuracy'])
 

@@ -84,9 +84,9 @@ def map_text_list_to_embedding(text_list, label_for_text_list, num_labels, label
         word_v_np = np.array(word_v_list)
         word_count = word_v_np.shape[0]
         word_v_mean = np.sum(word_v_np, axis=0)/word_count
-        log.info("word_v_mean.shape")
-        log.info(word_v_mean.shape)
-        
+        #log.info("word_v_mean.shape")
+        #log.info(word_v_mean.shape)
+
         x_list.append(word_v_mean)
         y_list.append(label_id)
 

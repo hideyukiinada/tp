@@ -70,7 +70,7 @@ def train(data_dir=None):
     all_words = map_text_list_to_word_list(x_train_text)
 
     model = Word2Vec([all_words],
-                     size=5,  # Number of dimension for a word vector
+                     size=100,  # Number of dimension for a word vector
                      window=5,
                      min_count=1,
                      workers=4)  # Num threads

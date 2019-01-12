@@ -91,7 +91,8 @@ def example(data_dir=None):
 
     # Set up a model
     model = Sequential()
-    model.add(Dense(128, activation='relu', input_shape=(x_train_v.shape[1],)))
+    model.add(Dense(512, activation='relu', input_shape=(x_train_v.shape[1],)))
+    model.add(Dense(128, activation='relu'))
     model.add(Dense(20, activation='softmax'))
     # Note the use of tf.train.AdamOptimizer instead of tf.keras.optimizers.Adam
     optimizer = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999)

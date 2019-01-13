@@ -16,4 +16,7 @@ Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |Naive Bayes | NA | NA | NA | NA | 87.682894% |
 |Embedding word2vec (all words) | All | 10,000 | 0.8653 |0.7168 | 43.522213% |
 |Embedding doc2vec (no word normalization) | All | 20 | 0.1089 | 0.9696 | 60.148976% |
+|Embedding doc2vec (no stop words, bigram support) | All | 20 | 0.1265 | 0.9668 | 40.622506% |
+
+
  

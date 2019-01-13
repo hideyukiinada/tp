@@ -76,7 +76,7 @@ def train(data_dir=None):
         tagged_doc = gensim.models.doc2vec.TaggedDocument(word_list, tag_list)
         corpus.append(tagged_doc)
 
-    model = gensim.models.doc2vec.Doc2Vec(vector_size=100, min_count=2, epochs=40)
+    model = gensim.models.doc2vec.Doc2Vec(vector_size=50, min_count=2, epochs=40)
     model.build_vocab(corpus)
     log.info("Build completed")
 

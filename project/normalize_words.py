@@ -20,9 +20,8 @@ import nltk
 nltk.download('stopwords') # Download upon loading.  This method does not download if it's already cached.
 
 from nltk.corpus import stopwords
-
 import gensim
-from gensim.utils import lemmatize
+
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging

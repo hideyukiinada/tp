@@ -52,7 +52,7 @@ def map_text_list_to_embedding(text_list, label_for_text_list, num_labels, label
 
     for i, text in enumerate(text_list):
         log.debug("Processing post: [%d]" % (i + 1))
-        word_list = text.split()  # FIXME
+        word_list = text.split()
 
         v = model.infer_vector(word_list)
 

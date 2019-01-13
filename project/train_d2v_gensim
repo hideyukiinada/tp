@@ -71,7 +71,7 @@ def train(data_dir=None):
     # Break up entire text to words
     corpus = []
     for i, text in enumerate(x_train_text):
-        word_list = text.split() # FIXME
+        word_list = text.split()
         tag_list = ["_TRAIN_ID%d_" % (i)]
         tagged_doc = gensim.models.doc2vec.TaggedDocument(word_list, tag_list)
         corpus.append(tagged_doc)

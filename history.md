@@ -18,7 +18,5 @@ Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |Embedding doc2vec (100D, no word normalization) | All | 20 | 0.1089 | 0.9696 | 60.148976% |
 |Embedding doc2vec (50D, no word normalization) | All | 20 | 0.1720 | 0.9472 |58.286778% |
 |Embedding doc2vec (50D, no word normalization, dropout added) | All | 20 | 0.9443 | 0.6763 |60.681032% |
+|Embedding doc2vec (50D, no word normalization, dropout added) | All | 40 | 0.8516 | 0.7024 |60.707635% |
  Embedding doc2vec (100D, no stop words, bigram support) | All | 20 | 0.1265 | 0.9668 | 40.622506% |
-
-
- 

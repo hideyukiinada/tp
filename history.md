@@ -37,3 +37,15 @@ Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |Embedding doc2vec + Neural Network(50D, no word normalization, dropout added) | All | 20 | 0.9443 | 0.6763 |60.681032% |
 |Embedding doc2vec + Neural Network (50D, no word normalization, dropout added) | All | 40 | 0.8516 | 0.7024 |60.707635% |
  Embedding doc2vec + Neural Network (100D, no stop words, bigram support) | All | 20 | 0.1265 | 0.9668 | 40.622506% |
+
+## Epoch and accuracy for TF-IDF Neural Network approach
+
+Measured on Linux
+
+Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
+|---|---|---|---|---|---|
+|TF-IDF + Neural Network | NA | 1 |1.4305  | 0.8095 | 91.726523% |
+|TF-IDF + Neural Network | NA | 5 |0.0112   | 0.9983 | 93.615323% |
+|TF-IDF + Neural Network | NA | 10 | 0.0057 | 0.9987 | 93.402501% |
+|TF-IDF + Neural Network | NA | 20 | 0.0030 | 0.9991 | 93.482309% |
+

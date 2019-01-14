@@ -1,4 +1,4 @@
-# Accuracy history
+# Accuracy chart
 
 Dataset: 20 Newsgroups
 http://qwone.com/~jason/20Newsgroups/

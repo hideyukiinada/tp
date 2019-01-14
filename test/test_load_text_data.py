@@ -14,6 +14,7 @@ from pathlib import Path
 
 import numpy as np
 from project.load_text_data import load_text_from_files
+from project.load_text_data import load_text_and_label_id_from_files
 from project.text_to_id import map_label_to_id
 
 TEST_DATA_DIR = Path("/tmp/tp/test")
@@ -125,6 +126,53 @@ class TestLoadTextData(unittest.TestCase):
                 break
 
         self.assertTrue(result, "Text was not loaded.")
+
+    def test_load_text_and_label_id_from_files(self):
+        """
+        Test loading text
+        """
+        create_test_files()
+
+        (x_train, y_train), (x_test, y_test), (label_to_id, id_to_label) = load_text_and_label_id_from_files(
+            TEST_DATA_DIR, test_dataset_ratio=0.2)
+
+        # x_train len
+        expected = 5  # 4 apples and 1 cherry
+        actual = len(x_train)
+
+        result = actual == expected
+        self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
+
+        # x_test len
+        expected = 2  # 1 apples and 1 cherry
+        actual = len(x_test)
+
+        result = actual == expected
+        self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
+
+        labels = label_to_id.keys()
+        actual = set(labels)
+        expected = {"apple", "cherry"}
+        result = actual == expected
+        self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
+
+        ids = label_to_id.values()
+        actual = set(ids)
+        expected = {0, 1}
+        result = actual == expected
+        self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
+
+        labels = id_to_label.values()
+        actual = set(labels)
+        expected = {"apple", "cherry"}
+        result = actual == expected
+        self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
+
+        ids = id_to_label.keys()
+        actual = set(ids)
+        expected = {0, 1}
+        result = actual == expected
+        self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
 
 
 def main():

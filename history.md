@@ -14,6 +14,7 @@ Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |Embedding without pooling (512 words, 128 embedding output, truncating:post) | 10000 | 20 |  0.0457 | 0.9869 | 66.374036% |
 |LSTM with embedding | 10000 | 20 | 0.2826 | 0.9207 | 71.481777%|
 |Naive Bayes | NA | NA | NA | NA | 87.682894% |
+|SVM | NA | NA | NA | NA | 84.916201% |
 |Embedding word2vec (300D, all words) | All | 10,000 | 0.8653 |0.7168 | 43.522213% |
 |Embedding doc2vec (100D, no word normalization) | All | 20 | 0.1089 | 0.9696 | 60.148976% |
 |Embedding doc2vec (50D, no word normalization) | All | 20 | 0.1720 | 0.9472 |58.286778% |

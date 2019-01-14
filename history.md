@@ -18,7 +18,8 @@ it was split into two sets for these testing by me.
 
 Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |---|---|---|---|---|---|
-|TF-IDF + Neural Network | NA | 1 | 1.4383 | 0.7987 | 87.975525% |
+|TF-IDF + Neural Network | NA | 5 | 0.0103 | 0.9985 | 89.917531% |
+ TF-IDF + Neural Network | NA | 1 | 1.4383 | 0.7987 | 87.975525% |
 |TF-IDF + Naive Bayes | NA | NA | NA | NA | 87.682894% |
 |TF-IDF + SVM | NA | NA | NA | NA | 84.916201% |
 |TF (no IDF) + Neural Network|1000|20|0.0731 | 0.9906 | 61.479117%

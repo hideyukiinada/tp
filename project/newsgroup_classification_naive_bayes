@@ -85,7 +85,7 @@ def example(data_dir=None):
     # Test against test dataset
 
     total_size = y_hat_test.shape[0]
-    y_test = np.array(y_test_id)
+    y_test = y_test_id
 
     matched_indices = (y_hat_test == y_test)
 

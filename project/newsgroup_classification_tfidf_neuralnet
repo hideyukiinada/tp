@@ -5,7 +5,6 @@ Newsgroup post classification
 References
 ----------
 https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html
-https://scikit-learn.org/stable/modules/svm.html#svm
 
 __author__ = "Hide Inada"
 __copyright__ = "Copyright 2018, Hide Inada"
@@ -20,14 +19,19 @@ import sys
 from pathlib import Path
 import numpy as np
 
-from sklearn.datasets.base import Bunch
+import tensorflow as tf
+import keras
+
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
+
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.linear_model import SGDClassifier
-from sklearn import metrics
 
 from project.load_text_data import load_text_and_label_id_from_files
+
+EPOCH_SIZE = 1
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
@@ -57,6 +61,8 @@ def example(data_dir=None):
     (x_train_text, y_train_id), (x_test_text, y_test_id), (label_to_id, id_to_label) = \
         load_text_and_label_id_from_files(Path(data_dir), test_dataset_ratio=0.2, errors='ignore')
 
+    y_train_oh = keras.utils.to_categorical(y_train_id, 20).astype(np.float32)
+
     num_files_train = len(x_train_text)
     num_labels_train = len(set(y_train_id))
 
@@ -74,26 +80,28 @@ def example(data_dir=None):
         ('tfidf', TfidfTransformer())
     ])
 
-    svm = SGDClassifier(loss='hinge', penalty='l2',
-                        alpha=1e-3, random_state=42,
-                        max_iter=5, tol=None)
-
     x_train_vectors = vectorizer.fit_transform(x_train_text)
     x_test_vectors = vectorizer.transform(x_test_text)
 
-    svm.fit(x_train_vectors, y_train_id)
+    # Set up a model
+    model = Sequential()
+    model.add(Dense(128, activation='relu', input_shape=(x_train_vectors.shape[1],)))
+    model.add(Dense(20, activation='softmax'))
+    # Note the use of tf.train.AdamOptimizer instead of tf.keras.optimizers.Adam
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.001, beta1=0.9, beta2=0.999)
+    model.compile(loss=tf.keras.losses.categorical_crossentropy,
+                  optimizer=optimizer, metrics=['accuracy'])
 
-    y_hat_test = svm.predict(x_test_vectors)  # y_hat contains list of string labels
-    metrics.f1_score(y_test_id, y_hat_test, average='macro')
+    model.fit(x=x_train_vectors, y=y_train_oh, epochs=EPOCH_SIZE)
 
     # Test against test dataset
-    total_size = y_hat_test.shape[0]
-    y_test = y_test_id
+    y_hat_test_one_hot = model.predict(x_test_vectors)
 
-    matched_indices = (y_hat_test == y_test)
+    total_size = y_hat_test_one_hot.shape[0]
+    y_hat_test_id = np.argmax(y_hat_test_one_hot, axis=1)  # to int from one-hot vector
 
-    matched_array = y_test[matched_indices]
-    matched_count = matched_array.shape[0]
+    matched_indices = (y_hat_test_id == y_test_id)
+    matched_count = y_test_id[matched_indices].shape[0]
     log.info(
         "Matched: %d out of Total: %d (%f percent)" % (matched_count, total_size, matched_count * 100 / total_size))
 

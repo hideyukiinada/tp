@@ -150,6 +150,13 @@ class TestLoadTextData(unittest.TestCase):
         result = actual == expected
         self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
 
+        # y_test len
+        expected = {0, 1}
+        actual = set(y_test)
+
+        result = actual == expected
+        self.assertTrue(result, "actual does not match expected. \nActual:\n%s, \nExpected:\n%s" % (actual, expected))
+
         labels = label_to_id.keys()
         actual = set(labels)
         expected = {"apple", "cherry"}

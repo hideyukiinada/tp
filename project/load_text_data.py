@@ -10,6 +10,7 @@ __email__ = "hideyuki@gmail.com"
 
 import os
 import logging
+import numpy as np
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
@@ -109,9 +110,9 @@ def load_text_and_label_id_from_files(root_dir, test_dataset_ratio=0.2, errors=N
     Returns
     -------
     (x_train, y_train): tuple of list
-        x_train contains the list of text in string. y_train contains the list of label IDs in int.
+        x_train contains the list of text in string. y_train contains the ndarray of label IDs in int.
     (x_test, y_test): tuple of list
-        x_test contains the list of text in string. y_test contains the list of label IDs in int.
+        x_test contains the list of text in string. y_test contains the ndarray of label IDs in int.
     (label_to_id, id_to_label): tuple of dictionary
         label_to_id contains label to ID mapping.  id_to_label contains ID to label mapping.
 
@@ -187,4 +188,7 @@ def load_text_and_label_id_from_files(root_dir, test_dataset_ratio=0.2, errors=N
         x_test = list()
         y_test = list()
 
-    return (x_train, y_train), (x_test, y_test), (label_to_id, id_to_label)
+    y_train_np = np.array(y_train)
+    y_test_np = np.array(y_test)
+
+    return (x_train, y_train_np), (x_test, y_test_np), (label_to_id, id_to_label)

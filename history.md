@@ -16,7 +16,7 @@ Type|Size|
 This particular dataset (20news-18828.tar.gz) was not split into training and test dataset, so
 it was split into two sets for these testing by me.
 
-Type|Vocabulary|Epoch|Loss| Training Accuracy | *Test Accuracy |
+Type|Vocabulary|Epoch|Loss| Training Accuracy | Test Accuracy |
 |---|---|---|---|---|---|
 |TF-IDF + Neural Network | NA | 5 | 0.0103 | 0.9985 | 89.917531% |
  TF-IDF + Neural Network | NA | 1 | 1.4383 | 0.7987 | 87.975525% |
@@ -43,7 +43,7 @@ Type|Vocabulary|Epoch|Loss| Training Accuracy | *Test Accuracy |
 
 Measured on Linux
 
-Type|Vocabulary|Epoch|Loss| Training Accuracy | *Test Accuracy |
+Type|Vocabulary|Epoch|Loss| Training Accuracy | Test Accuracy |
 |---|---|---|---|---|---|
 |TF-IDF + Neural Network | NA | 1 |1.4305  | 0.8095 | 91.726523% |
 |TF-IDF + Neural Network | NA | 5 |0.0112   | 0.9983 | 93.615323% |

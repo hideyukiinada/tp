@@ -93,7 +93,7 @@ def example(data_dir=None):
 
     svm = SGDClassifier(loss='hinge', penalty='l2',
                         alpha=1e-3, random_state=42,
-                        max_iter=5, tol=None)
+                        max_iter=20, tol=None) # max_iter changed from 5.
 
     svm.fit(x_train_v, y_train_int)
 

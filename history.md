@@ -1,12 +1,18 @@
 Accuracy history
 
+Dataset: 20 Newsgroups
+http://qwone.com/~jason/20Newsgroups/
+20news-18828.tar.gz (duplicates removed, only "From" and "Subject" headers)
 Size of dataset
 
 Type|Size|
 |---|---|
 |Training dataset| 15069|
 |Test dataset| 3759|
+|Total | 18828|
 
+This particular dataset (20news-18828.tar.gz) was not split into training and test dataset, so
+it was split into two sets for these testing by me.
 
 Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |---|---|---|---|---|---|

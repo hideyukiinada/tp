@@ -1,9 +1,11 @@
-Accuracy history
+# Accuracy history
 
 Dataset: 20 Newsgroups
 http://qwone.com/~jason/20Newsgroups/
+
 20news-18828.tar.gz (duplicates removed, only "From" and "Subject" headers)
-Size of dataset
+
+## Size of dataset
 
 Type|Size|
 |---|---|

@@ -1,9 +1,17 @@
 Accuracy history
 
-Vocabulary size:  188459
+Size of dataset
+
+Type|Size|
+|---|---|
+|Training dataset| 15069|
+|Test dataset| 3759|
+
 
 Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |---|---|---|---|---|---|
+|Naive Bayes | NA | NA | NA | NA | 87.682894% |
+|SVM | NA | NA | NA | NA | 84.916201% |
 |Word frequency matrix per doc|1000|20|0.0731 | 0.9906 | 61.479117%
 |Word frequency matrix per doc|10000|20|0.0380 | 0.9946 | 79.675446%
 |Word frequency matrix per doc (2nd run)|10000|20|0.0256 | 0.9981| 81.723863%
@@ -13,8 +21,6 @@ Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |Embedding with pooling (512 words, 128 embedding output, truncating:post) | 10000 | 20 | 0.0392 | 0.9932 | 76.509710% |
 |Embedding without pooling (512 words, 128 embedding output, truncating:post) | 10000 | 20 |  0.0457 | 0.9869 | 66.374036% |
 |LSTM with embedding | 10000 | 20 | 0.2826 | 0.9207 | 71.481777%|
-|Naive Bayes | NA | NA | NA | NA | 87.682894% |
-|SVM | NA | NA | NA | NA | 84.916201% |
 |Embedding word2vec (300D, all words) | All | 10,000 | 0.8653 |0.7168 | 43.522213% |
 |Embedding doc2vec (100D, no word normalization) | All | 20 | 0.1089 | 0.9696 | 60.148976% |
 |Embedding doc2vec (50D, no word normalization) | All | 20 | 0.1720 | 0.9472 |58.286778% |

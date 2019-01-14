@@ -24,12 +24,11 @@ import sys
 from pathlib import Path
 import numpy as np
 
-from sklearn.datasets.base import Bunch
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import metrics
 
-from project.load_text_data import load_text_from_files
+from project.load_text_data import load_text_and_label_id_from_files
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
@@ -56,14 +55,14 @@ def example(data_dir=None):
         raise ValueError("data_dir is not set.")
 
     # Load text data
-    (x_train_text, y_train_labels), (x_test_text, y_test_labels) = \
-        load_text_from_files(Path(data_dir), test_dataset_ratio=0.2, errors='ignore')
+    (x_train_text, y_train_id), (x_test_text, y_test_id), (label_to_id, id_to_label) = \
+        load_text_and_label_id_from_files(Path(data_dir), test_dataset_ratio=0.2, errors='ignore')
 
     num_files_train = len(x_train_text)
-    num_labels_train = len(set(y_train_labels))
+    num_labels_train = len(set(y_train_id))
 
     num_files_test = len(x_test_text)
-    num_labels_test = len(set(y_test_labels))
+    num_labels_test = len(set(y_test_id))
 
     log.info("Number of labels found in training dataset: %d" % (num_labels_train))
     log.info("Number of posts found in training dataset: %d" % (num_files_train))
@@ -71,25 +70,22 @@ def example(data_dir=None):
     log.info("Number of labels found in test dataset: %d" % (num_labels_test))
     log.info("Number of posts found in test dataset: %d" % (num_files_test))
 
-    bunch_train = Bunch(data=x_train_text, target=y_train_labels)
-    bunch_test = Bunch(data=x_test_text, target=y_test_labels)
-
     tfid = TfidfVectorizer()  # More weight for words appearing frequently within fewer docs instead of in many docs.
 
-    x_train_vectors = tfid.fit_transform(bunch_train.data)  # Convert training dataset to tfid matrix
-    x_test_vectors = tfid.transform(bunch_test.data)  # Convert test set to tfid matrix
+    x_train_vectors = tfid.fit_transform(x_train_text)  # Convert training dataset to tfid matrix
+    x_test_vectors = tfid.transform(x_test_text)  # Convert test set to tfid matrix
 
     classifier = MultinomialNB(alpha=.01) # Naive Bayes classifier, per doc alpha accounts for features missing in training samples
-    classifier.fit(x_train_vectors, bunch_train.target)
+    classifier.fit(x_train_vectors, y_train_id)
     # MultinomialNB(alpha=0.01, class_prior=None, fit_prior=True)
 
     y_hat_test = classifier.predict(x_test_vectors)  # y_hat contains list of string labels
-    metrics.f1_score(bunch_test.target, y_hat_test, average='macro')
+    metrics.f1_score(y_test_id, y_hat_test, average='macro')
 
     # Test against test dataset
 
     total_size = y_hat_test.shape[0]
-    y_test = np.array(y_test_labels)
+    y_test = np.array(y_test_id)
 
     matched_indices = (y_hat_test == y_test)
 

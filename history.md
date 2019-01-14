@@ -50,3 +50,5 @@ Type|Vocabulary|Epoch|Loss| Accuracy | Test Accuracy |
 |TF-IDF + Neural Network | NA | 10 | 0.0057 | 0.9987 | 93.402501% |
 |TF-IDF + Neural Network | NA | 20 | 0.0030 | 0.9991 | 93.482309% |
 
+## Machines used
+* Mac (OS:10.13.5, RAM: 16 GB 1600 MHz DDR3, CPU: 2.6 GHz Intel Core i5, Python: 3.6.7) 

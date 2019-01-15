@@ -18,7 +18,7 @@ This particular dataset (20news-18828.tar.gz) was not split into training and te
 it was split into two sets for these testing by me.
 
 Type|Vocabulary|Epoch|Loss| Training Accuracy | Test Accuracy | Machine used | 
-|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 |TF-IDF (1 word)+ Naive Bayes | NA | NA | NA | NA | 66.76% | Mac |
 |TF-IDF (bigram) + Naive Bayes | NA | NA | NA | NA | 70.04% | Mac |
 |TF-IDF (trigram) + Naive Bayes | NA | NA | NA | NA | 70.84% | Mac |

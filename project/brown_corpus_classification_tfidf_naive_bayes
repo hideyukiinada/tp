@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+"""
+Brown corpus classification
+
+References
+----------
+https://scikit-learn.org/stable/datasets/id.html#loading-other-datasets
+https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html
+https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html
+
+__author__ = "Hide Inada"
+__copyright__ = "Copyright 2018, Hide Inada"
+__license__ = "The MIT License"
+__email__ = "hideyuki@gmail.com"
+"""
+
+import os
+
+# os.environ["MKL_CBWR"] = "AUTO" # Keep this line for further investigation.
+
+import logging
+import argparse
+import sys
+from pathlib import Path
+import numpy as np
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn import metrics
+
+from project.load_brown_corpus import load_text_and_label_id_from_files
+
+log = logging.getLogger(__name__)
+logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))  # Change the 2nd arg to INFO to suppress debug logging
+
+
+# Example of data dir:
+# /Users/<your user name>/nltk_data/corpora/brown
+# Specify this with --data_dir option on the command line
+
+def example(data_dir=None):
+    """Train the model and predict.
+
+    Parameters
+    ----------
+    data_dir: str
+        Directory where the data is stored.
+
+    raises
+    -------
+    ValueError
+        If data_dir is not set.
+    """
+    if data_dir is None:
+        raise ValueError("data_dir is not set.")
+
+    # Load text data
+    (x_train_text, y_train_id), (x_test_text, y_test_id), (label_to_id, id_to_label) = \
+        load_text_and_label_id_from_files(Path(data_dir), test_dataset_ratio=0.2, errors='ignore')
+
+    num_files_train = len(x_train_text)
+    num_labels_train = len(set(y_train_id))
+
+    num_files_test = len(x_test_text)
+    num_labels_test = len(set(y_test_id))
+
+    log.info("Number of labels found in training dataset: %d" % (num_labels_train))
+    log.info("Number of documents found in training dataset: %d" % (num_files_train))
+
+    log.info("Number of labels found in test dataset: %d" % (num_labels_test))
+    log.info("Number of documents found in test dataset: %d" % (num_files_test))
+
+    tfid = TfidfVectorizer()  # More weight for words appearing frequently within fewer docs instead of in many docs.
+
+    x_train_vectors = tfid.fit_transform(x_train_text)  # Convert training dataset to tfid matrix
+    x_test_vectors = tfid.transform(x_test_text)  # Convert test set to tfid matrix
+
+    classifier = MultinomialNB(alpha=.01) # Naive Bayes classifier, per doc alpha accounts for features missing in training samples
+    classifier.fit(x_train_vectors, y_train_id)
+
+    y_hat_test = classifier.predict(x_test_vectors)  # y_hat contains list of string labels
+
+    # Test against test dataset
+    total_size = y_hat_test.shape[0]
+    y_test = y_test_id
+
+    matched_indices = (y_hat_test == y_test)
+
+    matched_array = y_test[matched_indices]
+    matched_count = matched_array.shape[0]
+    log.info(
+        "Matched: %d out of Total: %d (%f percent)" % (matched_count, total_size, matched_count * 100 / total_size))
+
+
+def main():
+    """Defines an application's main functionality"""
+
+    parser = argparse.ArgumentParser(description='Newsgroup post classifier')
+    parser.add_argument('--data_dir',
+                        type=str,
+                        help="Data directory")
+
+    args = parser.parse_args()
+    data_dir = args.data_dir
+
+    example(data_dir=data_dir)
+
+
+if __name__ == "__main__":
+    main()

@@ -78,7 +78,7 @@ def example(train_data_dir=None, test_data_dir=None):
     log.info("Number of posts found in test dataset: %d" % (num_files_test))
 
     tfid = Pipeline([
-        ('vect', CountVectorizer(ngram_range=(1, 2))), # select bigrams (min 1 word, max 2 words)
+        ('vect', CountVectorizer(ngram_range=(1, 3))), # select trigrams (min 1 word, max 3 words)
         ('tfidf', TfidfTransformer())
     ])
 

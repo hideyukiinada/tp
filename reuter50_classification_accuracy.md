@@ -19,7 +19,8 @@ it was split into two sets for these testing by me.
 
 Type|Vocabulary|Epoch|Loss| Training Accuracy | Test Accuracy | Machine used | 
 |---|---|---|---|---|---|
-|TF-IDF + Naive Bayes | NA | NA | NA | NA | 66.76% | Mac |
+|TF-IDF (1 word)+ Naive Bayes | NA | NA | NA | NA | 66.76% | Mac |
+|TF-IDF (bigram) + Naive Bayes | NA | NA | NA | NA | 70.04% | Mac |
  
 ## Machines used
 * Mac (OS:10.13.5, RAM: 16 GB, CPU: 2.6 GHz Intel Core i5, Python: 3.6.7) 

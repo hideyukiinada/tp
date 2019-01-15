@@ -16,7 +16,7 @@ INFO:__main__:Matched: 42 out of Total: 94 (44.680851 percent)
 This particular dataset was not split into training and test dataset, so
 it was split into two sets for these testing by me.
 
-Type|Vocabulary|Epoch|Loss| Training Accuracy | Test Accuracy | Machine used | 
+|Type|Vocabulary|Epoch|Loss| Training Accuracy | Test Accuracy | Machine used | 
 |---|---|---|---|---|---|
 |TF-IDF (1 word)+ Naive Bayes | NA | NA | NA | NA | 44.680851% | Mac |
 |TF-IDF (bigram)+ Naive Bayes | NA | NA | NA | NA | 38.297872% | Mac |

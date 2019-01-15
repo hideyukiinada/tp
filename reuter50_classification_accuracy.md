@@ -19,9 +19,9 @@ it was split into two sets for these testing by me.
 
 Type|Epoch|Loss| Training Accuracy | Test Accuracy | Machine used | 
 |---|---|---|---|---|---|
-|TF-IDF (1 word)+ Naive Bayes | NA | NA | NA | NA | 66.76% | Mac |
-|TF-IDF (bigram) + Naive Bayes | NA | NA | NA | NA | 70.04% | Mac |
-|TF-IDF (trigram) + Naive Bayes | NA | NA | NA | NA | 70.84% | Mac |
+|TF-IDF (1 word)+ Naive Bayes | NA | NA | NA | 66.76% | Mac |
+|TF-IDF (bigram) + Naive Bayes | NA | NA | NA | 70.04% | Mac |
+|TF-IDF (trigram) + Naive Bayes | NA | NA | NA | 70.84% | Mac |
 |TF-IDF (bigram) + Neural Network | 5 | 0.0267 | 1.0000 | 69.16% | Mac |
  
 ## Machines used

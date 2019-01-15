@@ -17,7 +17,7 @@ This particular dataset (20news-18828.tar.gz) was not split into training and te
 it was split into two sets for these testing by me.
 
 ## Discrepany in accuracy between machines to run test
-I observed that better accuracy tends to be better on Linux than Mac for an exact same test script.  I haven't had a chance to look into this further.  Therefore if you see different numbers in below tables, that means that they were run on different machines.
+I observed that accuracy tends to be better on Linux than Mac for an exact same test script.  I haven't had a chance to look into this further.  Therefore if you see different numbers in below tables, that means that they were run on different machines.
 
 Type|Vocabulary|Epoch|Loss| Training Accuracy | Test Accuracy |
 |---|---|---|---|---|---|

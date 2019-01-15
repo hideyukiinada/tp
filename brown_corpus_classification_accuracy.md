@@ -4,7 +4,7 @@ Brown corpus dataset included in nltk
 
 ## Size of dataset
 
-Type|Size|
+|Type|Size|
 |---|---|
 |Training dataset| 407|
 |Test dataset| 94|

@@ -14,9 +14,6 @@ Type|Size|
 Each dataset consists of work done by 50 authors and the same set of authors 
 are in both datasets.
 
-This particular dataset (20news-18828.tar.gz) was not split into training and test dataset, so
-it was split into two sets for these testing by me.
-
 Type|Epoch|Loss| Training Accuracy | Test Accuracy | Machine used | 
 |---|---|---|---|---|---|
 |TF-IDF (1 word)+ Naive Bayes | NA | NA | NA | 66.76% | Mac |

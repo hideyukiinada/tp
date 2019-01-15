@@ -101,6 +101,7 @@ def main():
     parser = argparse.ArgumentParser(description='Newsgroup post classifier')
     parser.add_argument('--data_dir',
                         type=str,
+                        default="../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828",
                         help="Data directory")
 
     args = parser.parse_args()

@@ -19,7 +19,6 @@ import keras
 
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense
-from tensorflow.python.keras.layers import LSTM
 from project.load_text_data import load_text_from_files
 from project.text_to_id import map_label_to_id
 from project.text_to_id import map_text_list_to_word_list
@@ -117,6 +116,7 @@ def main():
     parser = argparse.ArgumentParser(description='Newsgroup post classifier')
     parser.add_argument('--data_dir',
                         type=str,
+                        default="../../../../ai/dataset/20/20newsgroups_fromto_only/20news-18828",
                         help="Data directory")
 
     args = parser.parse_args()
